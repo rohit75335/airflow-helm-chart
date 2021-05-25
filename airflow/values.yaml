@@ -87,6 +87,7 @@ images:
     repository: ~
     tag: ~
     pullPolicy: IfNotPresent
+    pullSecret: ""
   flower:
     repository: ~
     tag: ~
