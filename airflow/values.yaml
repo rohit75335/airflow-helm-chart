@@ -457,7 +457,10 @@ postgresql:
 
 # Authentication backend used for the experimental API
 api:
-  authBackend: airflow.api.auth.backend.deny_all
+  authBackend: airflow.api.auth.backend.basic_auth
+  access_control_allow_headers: origin, content-type, accept
+  access_control_allow_methods: POST, GET, OPTIONS, DELETE
+  #access_control_allow_origin: https://exampleclientapp.com
 
 # Git sync
 dags:
