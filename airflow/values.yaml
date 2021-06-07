@@ -482,7 +482,7 @@ dags:
     # ssh examples ssh://git@github.com/apache/airflow.git
     # git@github.com:apache/airflow.git
     # https example: https://github.com/apache/airflow.git
-    repo: https://f4iip75pf33iq5c5ehddrs57eaztm2sjzib67qmibg6p575yafka@dev.azure.com/RohitLaheri/AzCop-Demo/_git/DAGs  #https://github.com/apache/airflow.git
+    repo: https://_PAT_@dev.azure.com/RohitLaheri/AzCop-Demo/_git/DAGs  #https://github.com/apache/airflow.git
     branch: main #v1-10-stable
     rev: HEAD
     root: "/git"
@@ -528,6 +528,6 @@ dags:
     # interval between git sync attempts in seconds
     wait: 60
     # git sync image details
-    containerRepository: k8s.gcr.io/git-sync
+    containerRepository: k8s.gcr.io/git-sync/git-sync
     containerTag: v3.2.2
     containerName: git-sync
