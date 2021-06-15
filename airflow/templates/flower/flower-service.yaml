@@ -1,46 +1,39 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
-################################
-## Airflow Flower Service Component
-#################################
-{{- if eq .Values.executor "CeleryExecutor" }}
-kind: Service
+{{- if .Values.flower.enabled }}
 apiVersion: v1
+kind: Service
 metadata:
-  name: {{ .Release.Name }}-flower
+  name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.flower.service.annotations }}
+  annotations:
+    {{- toYaml .Values.flower.service.annotations | nindent 4 }}
+  {{- end }}
   labels:
-    tier: airflow
+    app: {{ include "airflow.labels.app" . }}
     component: flower
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service }}
-{{- with .Values.labels }}
-{{ toYaml . | indent 4 }}
-{{- end }}
 spec:
   type: {{ .Values.flower.service.type }}
   selector:
-    tier: airflow
+    app: {{ include "airflow.labels.app" . }}
     component: flower
     release: {{ .Release.Name }}
   ports:
-    - name: flower-ui
+    - name: flower
       protocol: TCP
-      port: {{ .Values.ports.flowerUI }}
-      targetPort: {{ .Values.ports.flowerUI }}
+      port: {{ .Values.flower.service.externalPort }}
+      {{- if and (eq .Values.flower.service.type "NodePort") (.Values.flower.service.nodePort.http) }}
+      nodePort: {{ .Values.flower.service.nodePort.http }}
+      {{- end }}
+      targetPort: 5555
+  {{- if eq .Values.flower.service.type "LoadBalancer" }}
+  {{- if .Values.flower.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.flower.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if .Values.flower.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.flower.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- end }}
 {{- end }}
