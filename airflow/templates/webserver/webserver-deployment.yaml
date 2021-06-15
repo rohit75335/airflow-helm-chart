@@ -72,7 +72,7 @@ spec:
         fsGroup: {{ .Values.gid }}
       {{- if or .Values.registry.secretName .Values.registry.connection }}
       imagePullSecrets:
-        - name: {{ template "registry_secret" . }}
+        - name: acr-secret #{{ template "registry_secret" . }}
       {{- end }}
       initContainers:
         - name: wait-for-airflow-migrations
